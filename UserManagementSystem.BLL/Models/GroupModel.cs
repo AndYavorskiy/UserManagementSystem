@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace UserManagementSystem.DAL.Entities
+namespace UserManagementSystem.BLL.Models
 {
     public class GroupModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public int UsersCount { get; set; }
+        public bool IsActive { get; set; }
     }
 }

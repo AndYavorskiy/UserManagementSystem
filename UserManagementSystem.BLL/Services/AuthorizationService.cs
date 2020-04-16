@@ -1,5 +1,4 @@
-﻿using AuthorizationService.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Exceptions;
 using UserManagementSystem.BLL.Extensions;
+using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Utilities;
 using UserManagementSystem.DAL.DbContexts;
 using UserManagementSystem.DAL.Entities;
+using UserManagementSystem.DAL.Enums;
 
 namespace UserManagementSystem.BLL.Services
 {
@@ -70,6 +71,7 @@ namespace UserManagementSystem.BLL.Services
                     {
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                         new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Role, Enum.GetName(typeof(RoleType), user.Role))
                     }),
                 Expires = DateTime.UtcNow.AddMinutes(authorizationConfigs.TokenExpiratinInMinutes),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

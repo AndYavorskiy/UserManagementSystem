@@ -1,9 +1,9 @@
-﻿using AuthorizationService.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Exceptions;
+using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Utilities;
 using UserManagementSystem.DAL.DbContexts;
 using UserManagementSystem.DAL.Entities;
@@ -19,7 +19,7 @@ namespace UserManagementSystem.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<DataPagedModel<UserDetailsModel>> Search(UserSearchModel searchModel)
+        public async Task<DataPagedModel<UserDetailsModel>> Search(FilterModel searchModel)
         {
             var query = searchModel.IncludeInactive
                 ? dbContext.Users.AsQueryable()

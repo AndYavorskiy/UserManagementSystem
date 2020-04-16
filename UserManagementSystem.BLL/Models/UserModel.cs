@@ -1,7 +1,7 @@
 ﻿using System;
 using UserManagementSystem.DAL.Enums;
 
-namespace AuthorizationService.Models
+namespace UserManagementSystem.BLL.Models
 {
     public class UserModel
     {
@@ -12,22 +12,5 @@ namespace AuthorizationService.Models
         public string LastName { get; set; }
         public string Phone { get; set; }
         public DateTime? Birthday { get; set; }
-    }
-
-    public class UserCreateModel : UserModel
-    {
-        public string Password { get; set; }
-    }
-
-    public class UserDetailsModel : UserModel
-    {
-        public bool IsActive { get; set; }
-    }
-
-    public class ChangePasswordModel
-    {
-        public string OldPassword { get; set; }
-
-        public string NewPassword { get; set; }
     }
 }

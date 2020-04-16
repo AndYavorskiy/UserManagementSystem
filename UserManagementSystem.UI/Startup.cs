@@ -1,4 +1,3 @@
-using AuthorizationService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,8 +6,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL;
+using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Utilities;
 
 namespace UserManagementSystem
@@ -32,9 +33,33 @@ namespace UserManagementSystem
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "User Mangement System API"
+                    Title = "User Mangement System API",
+                });
+
+                c.AddSecurityDefinition("Bearer",
+                    new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please enter into field the word 'Bearer' following by space and JWT",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey
+                    });
+
+                var openApiSecurityScheme = new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Id = "Bearer",
+                        Type = ReferenceType.SecurityScheme,
+                    },
+                };
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { openApiSecurityScheme, new List<string>() },
                 });
             });
+
 
             services.AddCors(options => options.AddPolicy(MovieRecommendationPolicy, builder =>
             {

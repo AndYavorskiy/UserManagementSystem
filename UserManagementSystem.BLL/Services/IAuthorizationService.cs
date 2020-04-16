@@ -1,5 +1,5 @@
-﻿using AuthorizationService.Models;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using UserManagementSystem.BLL.Models;
 
 namespace UserManagementSystem.BLL.Services
 {

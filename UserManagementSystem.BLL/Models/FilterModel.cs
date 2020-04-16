@@ -1,6 +1,6 @@
-﻿namespace AuthorizationService.Models
+﻿namespace UserManagementSystem.BLL.Models
 {
-    public class UserSearchModel
+    public class FilterModel
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }

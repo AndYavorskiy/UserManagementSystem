@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManagementSystem.DAL.DbContexts;
 
 namespace UserManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(UserManagementSystemDbContext))]
-    partial class UserManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200416133537_Added_Group_Active_Status")]
+    partial class Added_Group_Active_Status
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

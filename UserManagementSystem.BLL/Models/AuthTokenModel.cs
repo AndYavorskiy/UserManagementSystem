@@ -1,4 +1,4 @@
-﻿namespace AuthorizationService.Models
+﻿namespace UserManagementSystem.BLL.Models
 {
     public class AuthTokenModel
     {

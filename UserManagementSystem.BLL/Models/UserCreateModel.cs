@@ -1,9 +1,7 @@
 ﻿namespace UserManagementSystem.BLL.Models
 {
-    public class AuthModel
+    public class UserCreateModel : UserModel
     {
-        public string Login { get; set; }
-
         public string Password { get; set; }
     }
 }

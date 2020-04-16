@@ -3,7 +3,8 @@
     public enum ExceptionType
     {
         UnexppectedError,
-
-        UserNotFound
+        InvalidOperation,
+        UserNotFound,
+        GroupNotFound
     }
 }

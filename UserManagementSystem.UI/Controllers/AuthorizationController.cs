@@ -1,6 +1,6 @@
-﻿using AuthorizationService.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Services;
 
 namespace UserManagementSystem.Controllers
