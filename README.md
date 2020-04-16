@@ -6,5 +6,6 @@ A Web API for managing users and their groups.
 
 * ASP.Net Core 3.1
 * Entity Framework 3.1
+* MSSQL
 * Swagger
 * JWT Authentication
