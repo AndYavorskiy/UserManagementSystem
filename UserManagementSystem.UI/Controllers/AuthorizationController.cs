@@ -6,7 +6,7 @@ using UserManagementSystem.BLL.Services;
 namespace UserManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AuthorizationController : ControllerBase
     {
         private readonly IAuthorizationService authorizationService;

@@ -11,12 +11,13 @@ using System.Threading.Tasks;
 using UserManagementSystem.BLL;
 using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Utilities;
+using UserManagementSystem.UI.Middlewares;
 
 namespace UserManagementSystem
 {
     public class Startup
     {
-        private readonly string MovieRecommendationPolicy = "UserManagementSystemPolicy";
+        private readonly string UserManagementPolicy = "UserManagementSystemPolicy";
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration)
@@ -33,7 +34,7 @@ namespace UserManagementSystem
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "User Mangement System API",
+                    Title = "User Management System API",
                 });
 
                 c.AddSecurityDefinition("Bearer",
@@ -61,7 +62,7 @@ namespace UserManagementSystem
             });
 
 
-            services.AddCors(options => options.AddPolicy(MovieRecommendationPolicy, builder =>
+            services.AddCors(options => options.AddPolicy(UserManagementPolicy, builder =>
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
@@ -101,21 +102,21 @@ namespace UserManagementSystem
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseGlobalErrorHandling();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors(MovieRecommendationPolicy);
+            app.UseCors(UserManagementPolicy);
 
             app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Mangement System API");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "User Management System API");
             });
-
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 

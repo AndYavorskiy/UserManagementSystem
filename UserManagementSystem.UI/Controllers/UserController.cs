@@ -11,7 +11,7 @@ using UserManagementSystem.UI.Attributes;
 namespace UserManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IUserService userService;
@@ -28,7 +28,7 @@ namespace UserManagementSystem.Controllers
             return Ok(await userService.Search(filter));
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
         public async Task<ActionResult<UserDetailsModel>> Get(Guid id)
         {

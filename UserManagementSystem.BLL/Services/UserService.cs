@@ -19,27 +19,24 @@ namespace UserManagementSystem.BLL.Services
             this.dbContext = dbContext;
         }
 
-        public async Task<DataPagedModel<UserDetailsModel>> Search(FilterModel searchModel)
+        public async Task<DataPagedModel<UserDetailsModel>> Search(FilterModel filter)
         {
-            var query = searchModel.IncludeInactive
+            var query = filter.IncludeInactive
                 ? dbContext.Users.AsQueryable()
                 : dbContext.Users.Where(x => x.IsActive);
 
-            if (!string.IsNullOrWhiteSpace(searchModel.FilterText))
+            if (!string.IsNullOrWhiteSpace(filter.FilterText))
             {
-                var searchWords = searchModel.FilterText.Split(" ")
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .Select(x => x.Trim())
-                    .ToArray();
+                var text = filter.FilterText.Trim();
 
-                query = query.Where(x => searchWords.Contains(x.FirstName) || searchWords.Contains(x.LastName) || searchWords.Contains(x.Email));
+                query = query.Where(x => x.FirstName.Contains(text) || x.LastName.Contains(text) || x.Email.Contains(text));
             }
 
             var totalCount = await query.CountAsync();
 
             var items = await query
-                .Skip(searchModel.PageIndex * searchModel.PageSize)
-                .Take(searchModel.PageSize)
+                .Skip(filter.PageIndex * filter.PageSize)
+                .Take(filter.PageSize)
                 .Select(x => new UserDetailsModel
                 {
                     Id = x.Id,

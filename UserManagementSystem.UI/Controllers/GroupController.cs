@@ -9,7 +9,7 @@ using UserManagementSystem.UI.Attributes;
 namespace UserManagementSystem.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class GroupController : ControllerBase
     {
         private readonly IGroupService groupService;
@@ -27,7 +27,7 @@ namespace UserManagementSystem.Controllers
             return Ok(await groupService.Search(filter));
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
         public async Task<ActionResult<GroupDetailsModel>> Get(Guid id)
         {
