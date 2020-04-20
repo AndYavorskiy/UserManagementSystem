@@ -12,9 +12,12 @@ namespace UserManagementSystem.DAL.Entities
         public string Password { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public GenderType Gender { get; set; }
         public string Phone { get; set; }
         public DateTime? Birthday { get; set; }
         public bool IsActive { get; set; }
+        public bool PasswordChangeRequired { get; set; }
+        public string ProfileImageUrl { get; set; }
 
         public ICollection<UserGroup> UserGroups { get; set; }
     }

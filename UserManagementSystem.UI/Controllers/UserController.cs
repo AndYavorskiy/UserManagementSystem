@@ -55,11 +55,19 @@ namespace UserManagementSystem.Controllers
             return Ok(await userService.Update(userModel));
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
         public async Task<ActionResult> Delete(Guid id)
         {
             await userService.Delete(id);
+            return NoContent();
+        }
+
+        [HttpPut("change-password")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
+        {
+            await userService.ChangePassword(changePasswordModel);
             return NoContent();
         }
     }

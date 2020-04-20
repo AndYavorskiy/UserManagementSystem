@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Models;
 
@@ -11,7 +12,9 @@ namespace UserManagementSystem.BLL.Services
         Task<GroupModel> Create(GroupModel createModel);
         Task<GroupModel> Update(GroupModel groupModel);
         Task Delete(Guid groupId);
-        Task AddMembersToGroup(Guid groupId, Guid[] usersIds);
+        Task<List<GroupCandidate>> SearchCandidates(Guid groupId, int takeFirst, string filter);
+        Task<DataPagedModel<GroupMemberModel>> GetGroupMembers(Guid groupId, PagedDataRequestModel model);
+        Task AddMemberToGroup(Guid groupId, Guid userId);
         Task DeleteMemberFromGroup(Guid groupId, Guid userId);
     }
 }

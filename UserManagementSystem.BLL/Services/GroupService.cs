@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Exceptions;
@@ -35,6 +36,7 @@ namespace UserManagementSystem.BLL.Services
 
             var items = await query
                 .Include(x => x.UserGroups)
+                .ThenInclude(x => x.User)
                 .Skip(filter.PageIndex * filter.PageSize)
                 .Take(filter.PageSize)
                 .Select(x => new GroupDetailsModel
@@ -42,7 +44,7 @@ namespace UserManagementSystem.BLL.Services
                     Id = x.Id,
                     Name = x.Name,
                     IsActive = x.IsActive,
-                    MembersCount = x.UserGroups.Count()
+                    MembersCount = x.UserGroups.Where(x => x.User.IsActive).Count()
                 })
                 .ToArrayAsync();
 
@@ -57,12 +59,13 @@ namespace UserManagementSystem.BLL.Services
         {
             return (await dbContext.Groups
                 .Include(x => x.UserGroups)
+                .ThenInclude(x => x.User)
                 .Select(x => new GroupDetailsModel
                 {
                     Id = x.Id,
                     Name = x.Name,
                     IsActive = x.IsActive,
-                    MembersCount = x.UserGroups.Count()
+                    MembersCount = x.UserGroups.Where(x => x.User.IsActive).Count()
                 })
                 .FirstOrDefaultAsync(x => x.Id == groupId)) ?? throw new AppException(ExceptionType.GroupNotFound);
         }
@@ -109,7 +112,68 @@ namespace UserManagementSystem.BLL.Services
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddMembersToGroup(Guid groupId, Guid[] usersIds)
+        public Task<List<GroupCandidate>> SearchCandidates(Guid groupId, int takeFirst, string filter)
+        {
+            var query = dbContext.Users
+                .Include(x => x.UserGroups)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                var text = filter.Trim().ToUpper();
+
+                query = query.Where(x => x.FirstName.ToUpper().Contains(text)
+                    || x.LastName.ToUpper().Contains(text)
+                    || x.Email.ToUpper().Contains(text));
+            }
+
+            return query
+                 .OrderBy(x => x.FirstName)
+                 .ThenBy(x => x.LastName)
+                 .Take(takeFirst)
+                 .Select(x => new GroupCandidate
+                 {
+                     Id = x.Id,
+                     FirstName = x.FirstName,
+                     LastName = x.LastName,
+                     Email = x.Email,
+                     ProfileImageUrl = x.ProfileImageUrl,
+                     InsideGroup = x.UserGroups.Any(x => x.GroupId == groupId)
+                 })
+                 .ToListAsync();
+        }
+
+        public async Task<DataPagedModel<GroupMemberModel>> GetGroupMembers(Guid groupId, PagedDataRequestModel model)
+        {
+            var query = dbContext.UserGroups
+                .Where(x => x.GroupId == groupId)
+                .Include(x => x.User)
+                .Where(x => x.User.IsActive);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query.OrderBy(x => x.User.FirstName)
+                .ThenBy(x => x.User.LastName)
+                .Skip(model.PageIndex * model.PageSize)
+                .Take(model.PageSize)
+                .Select(x => new GroupMemberModel()
+                {
+                    Id = x.User.Id,
+                    FirstName = x.User.FirstName,
+                    LastName = x.User.LastName,
+                    Email = x.User.Email,
+                    ProfileImageUrl = x.User.ProfileImageUrl
+                })
+                .ToArrayAsync();
+
+            return new DataPagedModel<GroupMemberModel>
+            {
+                TotalCount = totalCount,
+                Items = items
+            };
+        }
+
+        public async Task AddMemberToGroup(Guid groupId, Guid userId)
         {
             var isGroupAvailable = await dbContext.Groups.AnyAsync(x => x.Id == groupId);
 
@@ -118,16 +182,12 @@ namespace UserManagementSystem.BLL.Services
                 throw new AppException(ExceptionType.GroupNotFound);
             }
 
-            var distinctUsersIds = usersIds
-                .Distinct()
-                .Select(userId => new UserGroup
-                {
-                    GroupId = groupId,
-                    UserId = userId
-                })
-                .ToArray();
+            await dbContext.UserGroups.AddAsync(new UserGroup
+            {
+                GroupId = groupId,
+                UserId = userId
+            });
 
-            await dbContext.UserGroups.AddRangeAsync(distinctUsersIds);
             await dbContext.SaveChangesAsync();
         }
 

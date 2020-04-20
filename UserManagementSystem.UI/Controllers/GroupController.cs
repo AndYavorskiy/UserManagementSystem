@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Constants;
 using UserManagementSystem.BLL.Models;
@@ -48,7 +49,7 @@ namespace UserManagementSystem.Controllers
             return Ok(await groupService.Update(userModel));
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         [AuthorizeRoles(Role.Admin)]
         public async Task<ActionResult> Delete(Guid id)
         {
@@ -56,15 +57,29 @@ namespace UserManagementSystem.Controllers
             return NoContent();
         }
 
-        [HttpPost("{groupId}/users")]
+        [HttpGet("{groupId}/candidates")]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
-        public async Task<ActionResult> AddMembersToGroup(Guid groupId, [FromBody] Guid[] usersIds)
+        public async Task<ActionResult<List<GroupCandidate>>> SearchCandidates(Guid groupId, int takeFirst, string filter)
         {
-            await groupService.AddMembersToGroup(groupId, usersIds);
+            return Ok(await groupService.SearchCandidates(groupId, takeFirst, filter));
+        }
+
+        [HttpGet("{groupId}/members")]
+        [AuthorizeRoles(Role.Admin, Role.Moderator)]
+        public async Task<ActionResult<DataPagedModel<GroupMemberModel>>> GetGroupMembers(Guid groupId, [FromQuery]PagedDataRequestModel model)
+        {
+            return Ok(await groupService.GetGroupMembers(groupId, model));
+        }
+
+        [HttpPost("{groupId}/members")]
+        [AuthorizeRoles(Role.Admin, Role.Moderator)]
+        public async Task<ActionResult> AddMemberToGroup(Guid groupId, [FromBody] AddGroupMemberModel model)
+        {
+            await groupService.AddMemberToGroup(groupId, model.UserId);
             return Ok();
         }
 
-        [HttpDelete("{groupId}/users/{userId}")]
+        [HttpDelete("{groupId}/members/{userId}")]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
         public async Task<ActionResult<GroupModel>> DeleteMemberFromGroup(Guid groupId, Guid userId)
         {

@@ -7,10 +7,13 @@ namespace UserManagementSystem.BLL.Models
     {
         public Guid Id { get; set; }
         public RoleType Role { get; set; }
+        public GenderType Gender { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Phone { get; set; }
         public DateTime? Birthday { get; set; }
+        public bool PasswordChangeRequired { get; set; }
+        public string ProfileImageUrl { get; set; }
     }
 }

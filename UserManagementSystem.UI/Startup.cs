@@ -66,7 +66,8 @@ namespace UserManagementSystem
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
-                       .AllowAnyHeader();
+                       .AllowAnyHeader()
+                       .WithExposedHeaders("Token-Expired");
             }));
 
             var authorizationConfigs = new AuthorizationConfigs();

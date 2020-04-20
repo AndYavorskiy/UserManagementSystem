@@ -35,25 +35,16 @@ namespace UserManagementSystem.BLL.Services
             var totalCount = await query.CountAsync();
 
             var items = await query
+                .OrderBy(x => x.FirstName)
+                .ThenBy(x => x.LastName)
                 .Skip(filter.PageIndex * filter.PageSize)
                 .Take(filter.PageSize)
-                .Select(x => new UserDetailsModel
-                {
-                    Id = x.Id,
-                    Role = x.Role,
-                    Email = x.Email,
-                    FirstName = x.FirstName,
-                    LastName = x.LastName,
-                    Phone = x.Phone,
-                    Birthday = x.Birthday,
-                    IsActive = x.IsActive
-                })
                 .ToArrayAsync();
 
             return new DataPagedModel<UserDetailsModel>
             {
                 TotalCount = totalCount,
-                Items = items
+                Items = items.Select(MapUserToModel).ToArray()
             };
         }
 
@@ -75,8 +66,10 @@ namespace UserManagementSystem.BLL.Services
                 Password = SecurePasswordHasher.Hash(createModel.Password),
                 Birthday = createModel.Birthday,
                 Phone = createModel.Phone,
+                Gender = createModel.Gender,
                 Role = createModel.Role,
-                IsActive = true
+                IsActive = true,
+                PasswordChangeRequired = true
             };
 
             await dbContext.Users.AddAsync(user);
@@ -97,6 +90,7 @@ namespace UserManagementSystem.BLL.Services
             user.Birthday = userModel.Birthday;
             user.Phone = userModel.Phone;
             user.IsActive = userModel.IsActive;
+            user.Gender = userModel.Gender;
 
             dbContext.Update(user);
             await dbContext.SaveChangesAsync();
@@ -113,6 +107,23 @@ namespace UserManagementSystem.BLL.Services
             await dbContext.SaveChangesAsync();
         }
 
+        public async Task ChangePassword(ChangePasswordModel changePasswordModel)
+        {
+            var user = (await dbContext.Users.FirstOrDefaultAsync(x => x.Email.ToUpper() == changePasswordModel.Login.ToUpper()))
+                ?? throw new AppException(ExceptionType.UserNotFound);
+
+            if (!SecurePasswordHasher.Verify(changePasswordModel.OldPassword, user.Password))
+            {
+                throw new AppUnauthorizedException();
+            }
+
+            user.Password = SecurePasswordHasher.Hash(changePasswordModel.NewPassword);
+            user.PasswordChangeRequired = false;
+
+            dbContext.Users.Update(user);
+            await dbContext.SaveChangesAsync();
+        }
+
         private static UserDetailsModel MapUserToModel(User user) => new UserDetailsModel
         {
             Id = user.Id,
@@ -122,7 +133,10 @@ namespace UserManagementSystem.BLL.Services
             LastName = user.LastName,
             Phone = user.Phone,
             Birthday = user.Birthday,
-            IsActive = user.IsActive
+            IsActive = user.IsActive,
+            PasswordChangeRequired = user.PasswordChangeRequired,
+            Gender = user.Gender,
+            ProfileImageUrl = user.ProfileImageUrl
         };
     }
 }

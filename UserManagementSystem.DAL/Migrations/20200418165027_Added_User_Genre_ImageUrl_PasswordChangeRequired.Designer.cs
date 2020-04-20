@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UserManagementSystem.DAL.DbContexts;
 
 namespace UserManagementSystem.DAL.Migrations
 {
     [DbContext(typeof(UserManagementSystemDbContext))]
-    partial class UserManagementSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200418165027_Added_User_Genre_ImageUrl_PasswordChangeRequired")]
+    partial class Added_User_Genre_ImageUrl_PasswordChangeRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

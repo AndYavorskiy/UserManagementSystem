@@ -11,5 +11,6 @@ namespace UserManagementSystem.BLL.Services
         Task<UserDetailsModel> Create(UserCreateModel userId);
         Task<UserDetailsModel> Update(UserDetailsModel userModel);
         Task Delete(Guid userId);
+        Task ChangePassword(ChangePasswordModel changePasswordModel);
     }
 }

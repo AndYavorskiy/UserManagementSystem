@@ -31,9 +31,9 @@ namespace UserManagementSystem.BLL.Services
         public async Task<AuthTokenModel> Login(AuthModel credentials)
         {
             var user = await dbContext.Users
-                .FirstOrDefaultAsync(x => x.Email.ToUpper() == credentials.Login.ToUpper()) ?? throw new AppUnauthorizedException();
+                .FirstOrDefaultAsync(x => x.Email.ToUpper() == credentials.Login.ToUpper() && x.IsActive);
 
-            if (!SecurePasswordHasher.Verify(credentials.Password, user.Password))
+            if (user == null || !SecurePasswordHasher.Verify(credentials.Password, user.Password))
             {
                 throw new AppUnauthorizedException();
             }
@@ -46,7 +46,7 @@ namespace UserManagementSystem.BLL.Services
             var principal = GetPrincipalFromExpiredToken(refreshTokenModel.Token);
             var userId = principal.GetLoggedInUserId();
 
-            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId);
+            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsActive);
             var oldRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.UserId == userId && x.Token == refreshTokenModel.RefreshToken);
 
             if (user == null || oldRefreshToken == null)
