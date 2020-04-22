@@ -2,6 +2,6 @@
 
 namespace UserManagementSystem.BLL.Exceptions
 {
-    public class AppUnauthorizedException : Exception
+    public class AppForbiddenException : Exception
     { }
 }

@@ -29,7 +29,7 @@ namespace UserManagementSystem.BLL.Services
             {
                 var searchGroup = filter.FilterText.Trim().ToUpper();
 
-                query = query.Where(x => x.Name.ToUpper() == searchGroup);
+                query = query.Where(x => x.Name.ToUpper().Contains(searchGroup));
             }
 
             var totalCount = await query.CountAsync();
@@ -37,6 +37,7 @@ namespace UserManagementSystem.BLL.Services
             var items = await query
                 .Include(x => x.UserGroups)
                 .ThenInclude(x => x.User)
+                .OrderBy(x => x.Name)
                 .Skip(filter.PageIndex * filter.PageSize)
                 .Take(filter.PageSize)
                 .Select(x => new GroupDetailsModel
@@ -116,7 +117,7 @@ namespace UserManagementSystem.BLL.Services
         {
             var query = dbContext.Users
                 .Include(x => x.UserGroups)
-                .AsQueryable();
+                .Where(x => x.IsActive);
 
             if (!string.IsNullOrWhiteSpace(filter))
             {

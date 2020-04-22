@@ -44,7 +44,7 @@ namespace UserManagementSystem.BLL.Services
         public async Task<AuthTokenModel> Refresh(RefreshTokenModel refreshTokenModel)
         {
             var principal = GetPrincipalFromExpiredToken(refreshTokenModel.Token);
-            var userId = principal.GetLoggedInUserId();
+            var userId = principal.GetCurrentUserId();
 
             var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId && x.IsActive);
             var oldRefreshToken = await dbContext.RefreshTokens.FirstOrDefaultAsync(x => x.UserId == userId && x.Token == refreshTokenModel.RefreshToken);

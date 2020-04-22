@@ -5,6 +5,7 @@
         UnexppectedError,
         InvalidOperation,
         UserNotFound,
+        CannotCreateUser,
         GroupNotFound
     }
 }

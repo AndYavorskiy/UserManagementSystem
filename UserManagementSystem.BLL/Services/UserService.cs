@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL.Exceptions;
@@ -7,6 +8,7 @@ using UserManagementSystem.BLL.Models;
 using UserManagementSystem.BLL.Utilities;
 using UserManagementSystem.DAL.DbContexts;
 using UserManagementSystem.DAL.Entities;
+using UserManagementSystem.DAL.Enums;
 
 namespace UserManagementSystem.BLL.Services
 {
@@ -48,16 +50,26 @@ namespace UserManagementSystem.BLL.Services
             };
         }
 
-        public async Task<UserDetailsModel> Get(Guid userId)
+        public async Task<UserDetailsModel> Get(Guid userId, Guid currentUserId, RoleType currentUserRole)
         {
             var user = (await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId))
                 ?? throw new AppException(ExceptionType.UserNotFound);
 
+            if (userId != currentUserId && currentUserRole == RoleType.User)
+            {
+                throw new AppForbiddenException();
+            }
+
             return MapUserToModel(user);
         }
 
-        public async Task<UserDetailsModel> Create(UserCreateModel createModel)
+        public async Task<UserDetailsModel> Create(UserCreateModel createModel, RoleType currentUserRole)
         {
+            if (currentUserRole == RoleType.Moderator && createModel.Role != RoleType.User)
+            {
+                throw new AppException(ExceptionType.CannotCreateUser);
+            }
+
             var user = new User
             {
                 FirstName = createModel.FirstName,
@@ -78,10 +90,17 @@ namespace UserManagementSystem.BLL.Services
             return MapUserToModel(user);
         }
 
-        public async Task<UserDetailsModel> Update(UserDetailsModel userModel)
+        public async Task<UserDetailsModel> Update(UserDetailsModel userModel, Guid currentUserId, RoleType currentUserRole)
         {
             var user = (await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userModel.Id))
               ?? throw new AppException(ExceptionType.UserNotFound);
+
+            var allowAction = userModel.Id == currentUserId || currentUserRole == RoleType.Admin || currentUserRole == RoleType.Moderator && user.Role == RoleType.User;
+
+            if (!allowAction)
+            {
+                throw new AppForbiddenException();
+            }
 
             user.Email = userModel.Email;
             user.Role = userModel.Role;
@@ -96,15 +115,6 @@ namespace UserManagementSystem.BLL.Services
             await dbContext.SaveChangesAsync();
 
             return userModel;
-        }
-
-        public async Task Delete(Guid userId)
-        {
-            var user = (await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId))
-                ?? throw new AppException(ExceptionType.UserNotFound);
-
-            dbContext.Remove(user);
-            await dbContext.SaveChangesAsync();
         }
 
         public async Task ChangePassword(ChangePasswordModel changePasswordModel)
@@ -122,6 +132,25 @@ namespace UserManagementSystem.BLL.Services
 
             dbContext.Users.Update(user);
             await dbContext.SaveChangesAsync();
+        }
+
+        public Task<List<GroupModel>> GetUserGroups(Guid userId, Guid currentUserId, RoleType currentUserRole)
+        {
+            if (userId != currentUserId && currentUserRole == RoleType.User)
+            {
+                throw new AppForbiddenException();
+            }
+
+            return dbContext.UserGroups
+                   .Include(x => x.Group)
+                   .Where(x => x.UserId == userId && x.Group.IsActive)
+                   .Select(x => new GroupModel
+                   {
+                       Id = x.GroupId,
+                       Name = x.Group.Name,
+                       IsActive = x.Group.IsActive
+                   })
+                   .ToListAsync();
         }
 
         private static UserDetailsModel MapUserToModel(User user) => new UserDetailsModel

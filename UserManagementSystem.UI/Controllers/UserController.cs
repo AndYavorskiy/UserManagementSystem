@@ -29,46 +29,54 @@ namespace UserManagementSystem.Controllers
         }
 
         [HttpGet("{id}")]
-        [AuthorizeRoles(Role.Admin, Role.Moderator)]
+        [Authorize]
         public async Task<ActionResult<UserDetailsModel>> Get(Guid id)
         {
-            return Ok(await userService.Get(id));
+            var currentUserId = User.GetCurrentUserId();
+            var currentUserRole = User.GetCurrentUserRole();
+
+            return Ok(await userService.Get(id, currentUserId, currentUserRole));
         }
 
         [HttpGet("my-info")]
-        public async Task<ActionResult<UserDetailsModel>> GetMyInfo()
+        public Task<ActionResult<UserDetailsModel>> GetMyInfo()
         {
-            return Ok(await userService.Get(User.GetLoggedInUserId()));
+            return Get(User.GetCurrentUserId());
         }
 
         [HttpPost]
         [AuthorizeRoles(Role.Admin, Role.Moderator)]
         public async Task<ActionResult<UserDetailsModel>> Create(UserCreateModel userModel)
         {
-            return Ok(await userService.Create(userModel));
+            return Ok(await userService.Create(userModel, User.GetCurrentUserRole()));
         }
 
         [HttpPut]
         [Authorize]
         public async Task<ActionResult<UserDetailsModel>> Update(UserDetailsModel userModel)
         {
-            return Ok(await userService.Update(userModel));
-        }
+            var currentUserId = User.GetCurrentUserId();
+            var currentUserRole = User.GetCurrentUserRole();
 
-        [HttpDelete("{id}")]
-        [AuthorizeRoles(Role.Admin, Role.Moderator)]
-        public async Task<ActionResult> Delete(Guid id)
-        {
-            await userService.Delete(id);
-            return NoContent();
+            return Ok(await userService.Update(userModel, currentUserId, currentUserRole));
         }
 
         [HttpPut("change-password")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult> ChangePassword(ChangePasswordModel changePasswordModel)
         {
             await userService.ChangePassword(changePasswordModel);
             return NoContent();
+        }
+
+        [HttpGet("{id}/groups")]
+        [Authorize]
+        public async Task<ActionResult<GroupModel>> GetUserGroups(Guid id)
+        {
+            var currentUserId = User.GetCurrentUserId();
+            var currentUserRole = User.GetCurrentUserRole();
+
+            return Ok(await userService.GetUserGroups(id, currentUserId, currentUserRole));
         }
     }
 }
