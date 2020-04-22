@@ -2,6 +2,7 @@
 using System;
 using UserManagementSystem.Common.Utilities;
 using UserManagementSystem.DAL.Entities;
+using UserManagementSystem.DAL.Enums;
 
 namespace UserManagementSystem.DAL.DbContexts
 {
@@ -24,11 +25,11 @@ namespace UserManagementSystem.DAL.DbContexts
                 Id = Guid.NewGuid(),
                 FirstName = "Admin",
                 LastName = "Admin",
-                Gender = Enums.GenderType.Other,
+                Gender = GenderType.Other,
                 IsActive = true,
                 Email = "admin@ums.com",
                 Password = SecurePasswordHasher.Hash("admin"),
-                Role = Enums.RoleType.Admin
+                Role = RoleType.Admin
             });
 
             modelBuilder.Entity<UserGroup>()
