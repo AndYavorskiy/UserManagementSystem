@@ -9,3 +9,7 @@ A Web API for managing users and their groups.
 * MSSQL
 * Swagger
 * JWT Authentication
+
+## Default user
+login: ```admin@ums.com``` <br />
+password: ```admin```
