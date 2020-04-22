@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagementSystem.BLL", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserManagementSystem.DAL", "UserManagementSystem.DAL\UserManagementSystem.DAL.csproj", "{2602ED88-96F9-4D10-A44A-6FE509B5C175}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagementSystem.Common", "UserManagementSystem.Common\UserManagementSystem.Common.csproj", "{6C8F5C83-B80F-4893-B4B4-C0B5B1FAEA2A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{2602ED88-96F9-4D10-A44A-6FE509B5C175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2602ED88-96F9-4D10-A44A-6FE509B5C175}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2602ED88-96F9-4D10-A44A-6FE509B5C175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C8F5C83-B80F-4893-B4B4-C0B5B1FAEA2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C8F5C83-B80F-4893-B4B4-C0B5B1FAEA2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C8F5C83-B80F-4893-B4B4-C0B5B1FAEA2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C8F5C83-B80F-4893-B4B4-C0B5B1FAEA2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

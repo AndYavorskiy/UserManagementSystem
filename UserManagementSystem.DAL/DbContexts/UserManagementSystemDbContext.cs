@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
+using UserManagementSystem.Common.Utilities;
 using UserManagementSystem.DAL.Entities;
 
 namespace UserManagementSystem.DAL.DbContexts
@@ -15,6 +17,20 @@ namespace UserManagementSystem.DAL.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>().HasData(new User
+            {
+                Id = Guid.NewGuid(),
+                FirstName = "Admin",
+                LastName = "Admin",
+                Gender = Enums.GenderType.Other,
+                IsActive = true,
+                Email = "admin@ums.com",
+                Password = SecurePasswordHasher.Hash("admin"),
+                Role = Enums.RoleType.Admin
+            });
+
             modelBuilder.Entity<UserGroup>()
                 .HasKey(bc => new { bc.UserId, bc.GroupId });
 

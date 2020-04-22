@@ -1,7 +1,7 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace UserManagementSystem.BLL.Utilities
+namespace UserManagementSystem.Common.Utilities
 {
     public class TokenValidator
     {

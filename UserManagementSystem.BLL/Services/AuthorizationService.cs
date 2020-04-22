@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using UserManagementSystem.BLL.Exceptions;
 using UserManagementSystem.BLL.Extensions;
 using UserManagementSystem.BLL.Models;
-using UserManagementSystem.BLL.Utilities;
+using UserManagementSystem.Common.Utilities;
 using UserManagementSystem.DAL.DbContexts;
 using UserManagementSystem.DAL.Entities;
 using UserManagementSystem.DAL.Enums;

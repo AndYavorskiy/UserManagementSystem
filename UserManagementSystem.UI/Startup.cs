@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UserManagementSystem.BLL;
 using UserManagementSystem.BLL.Models;
-using UserManagementSystem.BLL.Utilities;
+using UserManagementSystem.Common.Utilities;
 using UserManagementSystem.UI.Middlewares;
 
 namespace UserManagementSystem

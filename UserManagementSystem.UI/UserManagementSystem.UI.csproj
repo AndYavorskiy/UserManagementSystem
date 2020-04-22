@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UserManagementSystem.BLL\UserManagementSystem.BLL.csproj" />
+    <ProjectReference Include="..\UserManagementSystem.Common\UserManagementSystem.Common.csproj" />
   </ItemGroup>
 
 
